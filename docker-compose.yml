@@ -1,3 +1,4 @@
+
 services:
   postgresdb:
     image: postgres:16-alpine
@@ -19,7 +20,7 @@ services:
       retries: 5
 
   backend:
-    image: docker-backend-2400030974:latest
+    image: mohin09/docker-backend-2400030974:latest
     container_name: learningmodule-backend
     ports:
       - "8999:8999"
@@ -35,7 +36,7 @@ services:
       - learningmodule-net
 
   frontend:
-    image: docker-frontend-2400030974:latest
+    image: mohin09/docker-frontend-2400030974:latest
     container_name: learningmodule-frontend
     ports:
       - "3000:80"
