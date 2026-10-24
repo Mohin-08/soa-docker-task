@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/learning-modules")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(originPatterns = "*", allowedHeaders = "*")
 public class LearningModuleController {
 
     private final LearningModuleService learningModuleService;
