@@ -1,0 +1,53 @@
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: learningmodule-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-docker}
+      POSTGRES_DB: learningmodule_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - learningmodule-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d learningmodule_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: docker-backend-2400030974:latest
+    container_name: learningmodule-backend
+    ports:
+      - "8999:8999"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/learningmodule_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-docker}
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - learningmodule-net
+
+  frontend:
+    image: docker-frontend-2400030974:latest
+    container_name: learningmodule-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - learningmodule-net
+
+volumes:
+  postgres_data:
+
+networks:
+  learningmodule-net:
+    driver: bridge
